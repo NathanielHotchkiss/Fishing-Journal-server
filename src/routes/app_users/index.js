@@ -11,10 +11,15 @@ const jsonBodyParser = express.json();
 const router = express.Router();
 
 router
-  .get("/", async (req, res) => {
-    const { rows: app_users } = await db.file("db/app_users/get_all.sql");
+
+  .get("/:user_id", async (req, res) => {
+    const { user_id } = req.params;
+    const { rows: app_users } = await db.file("db/app_users/get_by_id.sql", {
+      user_id,
+    });
     res.json(app_users);
   })
+
   .post("/new", jsonBodyParser, async (req, res, next) => {
     const { password, email, first_name, last_name } = req.body;
 
@@ -41,17 +46,16 @@ router
 
       const newUser = {
         email,
-        protocol: "email",
         password: hashedPassword,
         first_name,
         last_name,
       };
 
       const {
-        rows: [user],
+        rows: [app_users],
       } = await db.file("db/app_users/put.sql", newUser);
 
-      res.status(201).json(user);
+      res.status(201).json(app_users);
     } catch (error) {
       next(error);
     }

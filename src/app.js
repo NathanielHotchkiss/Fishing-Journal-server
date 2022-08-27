@@ -1,26 +1,24 @@
-const express = require("express");
-const morgan = require("morgan");
 const cors = require("cors");
+const express = require("express");
 const helmet = require("helmet");
+const morgan = require("morgan");
 const { NODE_ENV } = require("./config");
+
+const app_users = require("./routes/app_users");
 const auth = require("./routes/auth");
-// const app_users = require("./routes/app_users");
 const fishing_logs = require("./routes/fishing_logs");
-require("dotenv").config();
 
 const app = express();
 
 const morganOption = NODE_ENV === "production" ? "tiny" : "common";
 
-app.use(morgan(morganOption));
-app.use(helmet());
 app.use(cors());
-app.use("/auth", auth);
-app.use("/fishing_logs", fishing_logs);
+app.use(helmet());
+app.use(morgan(morganOption));
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+app.use("/auth", auth);
+app.use("/app_users", app_users);
+app.use("/fishing_logs", fishing_logs);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;

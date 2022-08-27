@@ -1,5 +1,5 @@
-const express = require('express');
-const db = require('../../db');
+const express = require("express");
+const db = require("../../db");
 
 const jsonBodyParser = express.json();
 
@@ -7,13 +7,21 @@ const router = express.Router();
 
 router
 
-  .get('/:user_id', async (req, res) => {
-    const { user_id } = req.params;
-    const {rows: fishing_logs} = await db.file('db/fishing_logs/get_logs_by_id.sql', {user_id});
+  .get("/", async (req, res) => {
+    const { rows: fishing_logs } = await db.file("db/fishing_logs/get_all.sql");
     res.json(fishing_logs);
   })
 
-  .post('/new', jsonBodyParser, async (req, res, next) => {
+  .get("/:user_id", async (req, res) => {
+    const { user_id } = req.params;
+    const { rows: fishing_logs } = await db.file(
+      "db/fishing_logs/get_logs_by_id.sql",
+      { user_id }
+    );
+    res.json(fishing_logs);
+  })
+
+  .post("/new", jsonBodyParser, async (req, res, next) => {
     const {
       user_id,
       species,
@@ -21,16 +29,15 @@ router
       pounds,
       ounces,
       bait,
-      fishing_method
-    } = req.body
+      fishing_method,
+    } = req.body;
 
-    for (const field of ['species', 'fish_length', 'pounds', 'ounces'])
+    for (const field of ["species", "fish_length", "pounds", "ounces"])
       if (!req.body[field])
         return res.status(400).json({
-          error: `Missing '${field}' in request body`
+          error: `Missing '${field}' in request body`,
         });
-        try {
-
+    try {
       const newLog = {
         user_id,
         species,
@@ -38,18 +45,17 @@ router
         pounds,
         ounces,
         bait,
-        fishing_method
+        fishing_method,
       };
 
-      const {rows: [fishing_logs]} = await db.file('db/fishing_logs/put.sql', newLog);
+      const {
+        rows: [fishing_logs],
+      } = await db.file("db/fishing_logs/put.sql", newLog);
 
-      res
-        .status(201)
-        .json(fishing_logs)
-    } catch(error) {
-      next(error)
+      res.status(201).json(fishing_logs);
+    } catch (error) {
+      next(error);
     }
-  })
+  });
 
-
-  module.exports = router;
+module.exports = router;

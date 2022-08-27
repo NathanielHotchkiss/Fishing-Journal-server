@@ -29,5 +29,7 @@ const migrate = async () => {
 app.listen(PORT, async () => {
   await migrate();
   await db.load();
-  console.log(`Server running in ${NODE_ENV} mode and listening at port: ${PORT}`);
+  console.log(
+    `Server running in ${NODE_ENV} mode and listening at port: ${PORT}`
+  );
 });

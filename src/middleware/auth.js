@@ -1,12 +1,12 @@
-const { JsonWebTokenError } = require('jsonwebtoken');
-const {verifyJwt, getUserWithEmail} = require('../actions/auth');
+const { JsonWebTokenError } = require("jsonwebtoken");
+const { verifyJwt, getUserWithEmail } = require("../actions/auth");
 
 async function requireAuth(req, res, next) {
-  const authToken = req.get('Authorization') || '';
+  const authToken = req.get("Authorization") || "";
 
   let bearerToken;
-  if (!authToken.toLowerCase().startsWith('bearer ')) {
-    return res.status(401).json({ error: 'Missing bearer token' });
+  if (!authToken.toLowerCase().startsWith("bearer ")) {
+    return res.status(401).json({ error: "Missing bearer token" });
   } else {
     bearerToken = authToken.slice(7, authToken.length);
   }
@@ -14,24 +14,22 @@ async function requireAuth(req, res, next) {
   try {
     const payload = verifyJwt(bearerToken);
 
-    const user = await getUserWithEmail(
-      payload.sub,
-    );
+    const user = await getUserWithEmail(payload.sub);
 
     if (!user) {
-      return res.status(401).json({ error: 'Unauthorized request' });
+      return res.status(401).json({ error: "Unauthorized request" });
     }
-      
-    req.member = user;
+
+    req.user = user;
     next();
   } catch (error) {
     if (error instanceof JsonWebTokenError) {
-      return res.status(401).json({ error: 'Unauthorized request' });
+      return res.status(401).json({ error: "Unauthorized request" });
     }
 
     next(error);
   }
-};
+}
 
 module.exports = {
   requireAuth,

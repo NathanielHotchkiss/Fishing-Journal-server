@@ -41,7 +41,7 @@ authRouter
 
       const sub = dbUser.email;
       const payload = {
-        member_id: dbUser.member_id,
+        user_id: dbUser.user_id,
         first_name: dbUser.first_name,
         last_name: dbUser.last_name,
       };
@@ -53,11 +53,11 @@ authRouter
     }
   })
   .put(requireAuth, (req, res) => {
-    const sub = req.member.email;
+    const sub = req.app_user.email;
     const payload = {
-      member_id: req.member.member_id,
-      first_name: req.member.first_name,
-      last_name: req.member.last_name,
+      user_id: req.app_user.user_id,
+      first_name: req.app_user.first_name,
+      last_name: req.app_user.last_name,
     };
     res.send({
       authToken: createJwt(sub, payload),
