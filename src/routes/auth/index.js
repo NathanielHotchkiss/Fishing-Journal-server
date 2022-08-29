@@ -23,7 +23,6 @@ authRouter
 
     try {
       const dbUser = await getUserWithEmail(loginUser.email);
-
       if (!dbUser)
         return res.status(400).json({
           error: "Incorrect email or password",

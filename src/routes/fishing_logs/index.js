@@ -1,5 +1,6 @@
 const express = require("express");
 const db = require("../../db");
+const {requireAuth} = require("../../middleware/auth");
 
 const jsonBodyParser = express.json();
 
@@ -12,7 +13,7 @@ router
     res.json(fishing_logs);
   })
 
-  .get("/:user_id", async (req, res) => {
+  .get("/:user_id", requireAuth, async (req, res) => {
     const { user_id } = req.params;
     const { rows: fishing_logs } = await db.file(
       "db/fishing_logs/get_logs_by_id.sql",

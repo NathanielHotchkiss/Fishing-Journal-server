@@ -27,7 +27,7 @@ const hashPassword = (password) => bcrypt.hash(password, 12);
 const getUserWithEmail = async (email) => {
   const {
     rows: [user],
-  } = await db.file("db/app_users/get_by_email.sql", { emails: [email] });
+  } = await db.file("db/app_users/get_by_email.sql", { email });
   console.log("USER", user);
   return user;
 };

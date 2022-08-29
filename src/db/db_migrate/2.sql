@@ -5,17 +5,15 @@ INSERT INTO app_users (
     email, 
     password,
 ) VALUES (
-    1,
     'John',
     'Doe',
-    '12345@email.com',
+    '12345@gmail.com',
     '12345'
 ), (
-    2,
     'Nathan',
     'Hotchkiss',
-    'fake@email.com',
-    '$2a$12$WqcdTEB8sA6zSxNN2o2FC.wFujeMsKmAb.PQwMDpH2nuUBiRnNV1G'
+    'fake@gmail.com',
+    'password'
 );
 
 INSERT INTO fishing_logs (
