@@ -1,9 +1,11 @@
-SELECT * FROM go_insert_new_fishing_log(
-  ${user_id},
-  ${species},
-  ${fish_length},
-  ${pounds},
-  ${ounces},
-  ${bait},
-  ${fishing_method}
-);
+UPDATE fishing_logs
+SET species = ${species},
+    fish_length = ${fish_length},
+    pounds = ${pounds},
+    ounces = ${ounces},
+    bait = ${bait},
+    fishing_method = ${fishing_method}
+WHERE fish_id = ${fish_id}
+RETURNING fish_id;
+
+

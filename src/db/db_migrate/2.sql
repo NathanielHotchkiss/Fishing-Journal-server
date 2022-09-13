@@ -4,17 +4,7 @@ INSERT INTO app_users (
     last_name,
     email, 
     password,
-) VALUES (
-    'John',
-    'Doe',
-    '12345@gmail.com',
-    '12345'
-), (
-    'Nathan',
-    'Hotchkiss',
-    'fake@gmail.com',
-    'password'
-);
+)
 
 INSERT INTO fishing_logs (
     user_id,
@@ -25,7 +15,7 @@ INSERT INTO fishing_logs (
     bait,
     fishing_method
 ) VALUES (
-    1,
+    2,
     'Largemouth Bass',
     '11',
     '5',
@@ -41,7 +31,7 @@ INSERT INTO fishing_logs (
     'Live',
     'Shore'
 ), (
-    1,
+    2,
     'Longnose Gar',
     '16',
     '7',
@@ -49,7 +39,7 @@ INSERT INTO fishing_logs (
     'Real',
     'Boat'
 ), (
-    1,
+    2,
     'Largemouth Bass',
     '13',
     '7',
@@ -81,7 +71,7 @@ INSERT INTO fishing_logs (
     'Real',
     'Shore'
 ), (
-    1,
+    2,
     'Carp',
     '18',
     '14',
