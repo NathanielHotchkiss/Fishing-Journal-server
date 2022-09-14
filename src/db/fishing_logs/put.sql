@@ -6,6 +6,5 @@ SET species = ${species},
     bait = ${bait},
     fishing_method = ${fishing_method}
 WHERE fish_id = ${fish_id}
-RETURNING fish_id;
-
+RETURNING *;
 

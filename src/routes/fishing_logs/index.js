@@ -9,16 +9,6 @@ const router = express.Router();
 router
   .route("/")
 
-  .get(async (req, res) => {
-    const { user_id } = req.body;
-    console.log(user_id);
-    const { rows: fishing_logs } = await db.file(
-      "db/fishing_logs/get_all_by_user.sql",
-      { user_id }
-    );
-    res.json(fishing_logs);
-  })
-
   .post(jsonBodyParser, async (req, res, next) => {
     const {
       user_id,
@@ -74,15 +64,8 @@ router
 
     console.log("req.body: ", req.body);
     console.log("fish_id: ", fish_id);
-    const {
-      user_id,
-      species,
-      fish_length,
-      pounds,
-      ounces,
-      bait,
-      fishing_method,
-    } = req.body;
+    const { species, fish_length, pounds, ounces, bait, fishing_method } =
+      req.body;
 
     for (const field of ["species", "fish_length", "pounds", "ounces"])
       if (!req.body[field])
@@ -91,7 +74,7 @@ router
         });
     try {
       const newFishingLog = {
-        user_id,
+        fish_id,
         species,
         fish_length,
         pounds,
@@ -104,7 +87,7 @@ router
 
       const {
         rows: [fishing_logs],
-      } = await db.file("db/fishing_logs/put.sql", newFishingLog, fish_id);
+      } = await db.file("db/fishing_logs/put.sql", newFishingLog);
       console.log("fishing logs: ", fishing_logs);
       res.status(201).json(fishing_logs);
     } catch (error) {
@@ -122,10 +105,25 @@ router
       .catch(next);
   });
 
+router
+  .route("/user/:user_id")
+
+  .get(async (req, res) => {
+    const { user_id } = req.params;
+    console.log(user_id);
+    const { rows: fishing_logs } = await db.file(
+      "db/fishing_logs/get_all_by_user.sql",
+      { user_id }
+    );
+    res.json(fishing_logs);
+  });
+
 async function checkLogExists(req, res, next) {
   const { fish_id } = req.params;
   try {
-    const fishingLog = await db.file("db/fishing_logs/put.sql", fish_id);
+    const fishingLog = await db.file("db/fishing_logs/get_fish.sql", {
+      fish_id,
+    });
     if (!fishingLog) {
       return res.status(404).json({
         error: "Log does not exist",
