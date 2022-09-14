@@ -48,22 +48,19 @@ router
 
 router
   .route("/:fish_id")
-  .all(checkLogExists)
+  .all(checkLogExists, requireAuth)
 
   .get(async (req, res) => {
     const { fish_id } = req.params;
     const {
       rows: [fishing_logs],
-    } = await db.file("db/fishing_logs/get_fish.sql", { fish_id });
-    console.log(fishing_logs);
+    } = await db.file("db/fishing_logs/get_fish.sql", {fish_id});
     res.json(fishing_logs);
   })
 
   .put(jsonBodyParser, async (req, res, next) => {
     const { fish_id } = req.params;
 
-    console.log("req.body: ", req.body);
-    console.log("fish_id: ", fish_id);
     const { species, fish_length, pounds, ounces, bait, fishing_method } =
       req.body;
 
@@ -82,13 +79,11 @@ router
         bait,
         fishing_method,
       };
-      console.log("newFishingLog ", newFishingLog);
-      console.log("fish_id: ", fish_id);
 
       const {
         rows: [fishing_logs],
       } = await db.file("db/fishing_logs/put.sql", newFishingLog);
-      console.log("fishing logs: ", fishing_logs);
+
       res.status(201).json(fishing_logs);
     } catch (error) {
       next(error);
@@ -110,7 +105,7 @@ router
 
   .get(async (req, res) => {
     const { user_id } = req.params;
-    console.log(user_id);
+
     const { rows: fishing_logs } = await db.file(
       "db/fishing_logs/get_all_by_user.sql",
       { user_id }
@@ -129,7 +124,8 @@ async function checkLogExists(req, res, next) {
         error: "Log does not exist",
       });
     }
-    res.fishingLog = fishingLog;
+    res.locals.fishingLog = fishingLog;
+
     next();
   } catch (error) {
     next(error);
