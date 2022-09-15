@@ -54,7 +54,7 @@ router
     const { fish_id } = req.params;
     const {
       rows: [fishing_logs],
-    } = await db.file("db/fishing_logs/get_fish.sql", {fish_id});
+    } = await db.file("db/fishing_logs/get_fish.sql", { fish_id });
     res.json(fishing_logs);
   })
 

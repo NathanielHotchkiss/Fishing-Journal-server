@@ -1,5 +1,6 @@
 const express = require("express");
 const db = require("../../db");
+const { requireAuth } = require("../../middleware/auth");
 const {
   validatePassword,
   hasUserWithEmail,
@@ -12,15 +13,17 @@ const router = express.Router();
 
 router
 
-  .get("/:user_id", async (req, res) => {
+  .get("/:user_id", requireAuth, async (req, res) => {
     const { user_id } = req.params;
-    const { rows: app_users } = await db.file("db/app_users/get_by_id.sql", {
+    const {
+      rows: [app_users],
+    } = await db.file("db/app_users/get_by_id.sql", {
       user_id,
     });
     res.json(app_users);
   })
 
-  .post("/new", jsonBodyParser, async (req, res, next) => {
+  .post("/", jsonBodyParser, async (req, res, next) => {
     const { password, email, first_name, last_name } = req.body;
 
     for (const field of ["first_name", "last_name", "email", "password"])
