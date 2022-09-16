@@ -1,6 +1,7 @@
-SELECT * FROM go_insert_new_app_user(
-  ${first_name},
-  ${last_name},
-  ${email},
-  ${password}
-);
+UPDATE app_users
+SET first_name = ${first_name},
+    last_name = ${last_name},
+    email = ${email}
+WHERE user_id = ${user_id}
+RETURNING *;
+
