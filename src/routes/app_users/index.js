@@ -48,7 +48,6 @@ router
       const {
         rows: [app_users],
       } = await db.file("db/app_users/post.sql", newUser);
-
       res.status(201).json(app_users);
     } catch (error) {
       next(error);
