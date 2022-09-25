@@ -1,6 +1,6 @@
 # Fishing Log Server
 
-## This app is a work in progress.
+This app is a work in progress.
 
 ## Installation
 
