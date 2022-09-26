@@ -1,6 +1,8 @@
-# Fishing Log Server
+# Fishing Journal Server
 
-This app is a work in progress.
+This app is a work in progress.  
+
+Built to capture valuable fishing data.  
 
 ## Installation
 
