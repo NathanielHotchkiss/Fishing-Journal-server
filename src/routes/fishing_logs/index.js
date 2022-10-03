@@ -103,7 +103,7 @@ router
 router
   .route("/user/:user_id")
 
-  .get(async (req, res) => {
+  .get(requireAuth, async (req, res) => {
     const { user_id } = req.params;
 
     const { rows: fishing_logs } = await db.file(
