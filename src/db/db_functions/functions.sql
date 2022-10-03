@@ -54,3 +54,27 @@ BEGIN
   RETURN QUERY SELECT * FROM fishing_logs WHERE fish_id = _fish_id;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION go_insert_new_tackle(
+  _user_id BIGINT,
+  _title TEXT,
+  _description TEXT,
+  _type TEXT
+) RETURNS SETOF tackle AS $$
+DECLARE
+  _tackle_id BIGINT;
+BEGIN 
+  INSERT INTO tackle (
+    user_id,
+    title, 
+    description,
+    type
+  ) VALUES (
+    _user_id,
+    _title,
+    _description,
+    _type
+  ) RETURNING tackle_id INTO _tackle_id;
+  RETURN QUERY SELECT * FROM tackle WHERE tackle_id = _tackle_id;
+END;
+$$ LANGUAGE plpgsql;
