@@ -20,6 +20,7 @@ router
       fishing_method,
     } = req.body;
 
+    console.log(req);
     for (const field of ["species", "fish_length", "pounds", "ounces"])
       if (!req.body[field])
         return res.status(400).json({
