@@ -58,8 +58,9 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION go_insert_new_tackle(
   _user_id BIGINT,
   _title TEXT,
-  _description TEXT,
-  _type TEXT
+  _brand TEXT,
+  _color TEXT,
+  _description TEXT
 ) RETURNS SETOF tackle AS $$
 DECLARE
   _tackle_id BIGINT;
@@ -67,13 +68,15 @@ BEGIN
   INSERT INTO tackle (
     user_id,
     title, 
-    description,
-    type
+    brand,
+    color,
+    description
   ) VALUES (
     _user_id,
     _title,
-    _description,
-    _type
+    _brand,
+    _color,
+    _description
   ) RETURNING tackle_id INTO _tackle_id;
   RETURN QUERY SELECT * FROM tackle WHERE tackle_id = _tackle_id;
 END;

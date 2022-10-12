@@ -25,8 +25,9 @@
     tackle_id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     user_id BIGINT references app_users(user_id) NOT NULL,
+    brand VARCHAR(255),
+    color VARCHAR(255),
     description VARCHAR(255),
-    type VARCHAR(255),
     created TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     archived TIMESTAMPTZ DEFAULT NULL
 );

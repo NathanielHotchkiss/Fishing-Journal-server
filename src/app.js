@@ -7,8 +7,8 @@ const { NODE_ENV } = require("./config");
 const app_users = require("./routes/app_users");
 const auth = require("./routes/auth");
 const fishing_logs = require("./routes/fishing_logs");
-const tackle = require("./routes/tackle");
 const species = require("./routes/species");
+const tackle = require("./routes/tackle");
 
 const app = express();
 
@@ -21,8 +21,8 @@ app.use(morgan(morganOption));
 app.use("/auth", auth);
 app.use("/app_users", app_users);
 app.use("/fishing_logs", fishing_logs);
-app.use("/tackle", tackle);
 app.use("/species", species);
+app.use("/tackle", tackle);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;

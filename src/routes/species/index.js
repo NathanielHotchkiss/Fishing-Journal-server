@@ -9,7 +9,7 @@ const router = express.Router();
 router
   .route("/")
 
-  .post(jsonBodyParser, async (req, res, next) => {
+  .post(jsonBodyParser, requireAuth, async (req, res, next) => {
     const { user_id, title, description, type } = req.body;
 
     for (const field of ["title", "description", "type"])
@@ -37,7 +37,7 @@ router
 
 router
   .route("/:species_id")
-  .all(checkSpeciesExists)
+  .all(checkSpeciesExists, requireAuth)
 
   .get(async (req, res) => {
     const { species_id } = req.params;

@@ -8,11 +8,13 @@ const router = express.Router();
 
 router
   .route("/")
+  .all(requireAuth)
 
   .post(jsonBodyParser, async (req, res, next) => {
-    const { user_id, title, description, type } = req.body;
+    const { user_id, title, brand, color, description } = req.body;
+    console.log(req.body);
 
-    for (const field of ["title", "description", "type"])
+    for (const field of ["title", "color"])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
@@ -21,8 +23,9 @@ router
       const newTackle = {
         user_id,
         title,
+        brand,
+        color,
         description,
-        type,
       };
 
       const {
@@ -50,9 +53,9 @@ router
   .put(jsonBodyParser, async (req, res, next) => {
     const { tackle_id } = req.params;
 
-    const { title, description, type } = req.body;
+    const { title, description, brand, type } = req.body;
 
-    for (const field of ["title", "description", "type"])
+    for (const field of ["title", "type"])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
@@ -62,6 +65,7 @@ router
         tackle_id,
         title,
         description,
+        brand,
         type,
       };
 
@@ -91,10 +95,9 @@ router
   .get(requireAuth, async (req, res) => {
     const { user_id } = req.params;
 
-    const { rows: tackle } = await db.file(
-      "db/tackle/get_all_by_user.sql",
-      { user_id }
-    );
+    const { rows: tackle } = await db.file("db/tackle/get_all_by_user.sql", {
+      user_id,
+    });
     res.json(tackle);
   });
 
