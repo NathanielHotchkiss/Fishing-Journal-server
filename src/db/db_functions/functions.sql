@@ -29,7 +29,11 @@ CREATE OR REPLACE FUNCTION go_insert_new_fishing_log(
   _pounds TEXT,
   _ounces TEXT,
   _bait TEXT,
-  _fishing_method TEXT
+  _fishing_method TEXT,
+  _filename TEXT,
+  _filepath TEXT,
+  _mimetype TEXT,
+  _size TEXT
 ) RETURNS SETOF fishing_logs AS $$
 DECLARE
   _fish_id BIGINT;
@@ -41,7 +45,11 @@ BEGIN
     pounds,
     ounces,
     bait,
-    fishing_method
+    fishing_method,
+    filename,
+    filepath,
+    mimetype,
+    size
   ) VALUES (
     _user_id,
     _species,
@@ -49,7 +57,11 @@ BEGIN
     _pounds,
     _ounces,
     _bait,
-    _fishing_method
+    _fishing_method,
+    _filename,
+    _filepath,
+    _mimetype,
+    _size
   ) RETURNING fish_id INTO _fish_id;
   RETURN QUERY SELECT * FROM fishing_logs WHERE fish_id = _fish_id;
 END;

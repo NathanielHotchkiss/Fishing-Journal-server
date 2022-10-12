@@ -2,6 +2,11 @@ const express = require("express");
 const db = require("../../db");
 const { requireAuth } = require("../../middleware/auth");
 
+const multer = require('multer');
+const imageUpload = multer({
+  dest: 'images',
+});
+
 const jsonBodyParser = express.json();
 
 const router = express.Router();
@@ -9,7 +14,7 @@ const router = express.Router();
 router
   .route("/")
 
-  .post(jsonBodyParser, async (req, res, next) => {
+  .post(jsonBodyParser, imageUpload.single('image'), async (req, res, next) => {
     const {
       user_id,
       species,
@@ -18,9 +23,12 @@ router
       ounces,
       bait,
       fishing_method,
+      filename,
+      mimetype,
+      size
     } = req.body;
+    const filepath = req.body.path
 
-    console.log(req);
     for (const field of ["species", "fish_length", "pounds", "ounces"])
       if (!req.body[field])
         return res.status(400).json({
@@ -35,6 +43,10 @@ router
         ounces,
         bait,
         fishing_method,
+        filename,
+        filepath,
+        mimetype,
+        size
       };
 
       const {
