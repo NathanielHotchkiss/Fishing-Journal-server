@@ -53,9 +53,9 @@ router
   .put(jsonBodyParser, async (req, res, next) => {
     const { tackle_id } = req.params;
 
-    const { title, description, brand, type } = req.body;
+    const { title, description, brand, color } = req.body;
 
-    for (const field of ["title", "type"])
+    for (const field of ["title", "brand", "color"])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
@@ -64,9 +64,9 @@ router
       const newTackle = {
         tackle_id,
         title,
-        description,
         brand,
-        type,
+        color,
+        description,
       };
 
       const {
