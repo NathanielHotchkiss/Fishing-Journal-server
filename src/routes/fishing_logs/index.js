@@ -2,19 +2,15 @@ const express = require("express");
 const db = require("../../db");
 const { requireAuth } = require("../../middleware/auth");
 
-const multer = require('multer');
-const imageUpload = multer({
-  dest: 'images',
-});
-
 const jsonBodyParser = express.json();
 
 const router = express.Router();
 
 router
   .route("/")
+  .all(requireAuth)
 
-  .post(jsonBodyParser, imageUpload.single('image'), async (req, res, next) => {
+  .post(jsonBodyParser, async (req, res, next) => {
     const {
       user_id,
       species,
@@ -23,11 +19,7 @@ router
       ounces,
       bait,
       fishing_method,
-      filename,
-      mimetype,
-      size
     } = req.body;
-    const filepath = req.body.path
 
     for (const field of ["species", "fish_length", "pounds", "ounces"])
       if (!req.body[field])
@@ -43,10 +35,6 @@ router
         ounces,
         bait,
         fishing_method,
-        filename,
-        filepath,
-        mimetype,
-        size
       };
 
       const {
@@ -115,14 +103,16 @@ router
 
 router
   .route("/user/:user_id")
+  .all(requireAuth)
 
-  .get(requireAuth, async (req, res) => {
+  .get(async (req, res) => {
     const { user_id } = req.params;
 
     const { rows: fishing_logs } = await db.file(
       "db/fishing_logs/get_all_by_user.sql",
       { user_id }
     );
+
     res.json(fishing_logs);
   });
 
