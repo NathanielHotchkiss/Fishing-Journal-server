@@ -9,7 +9,9 @@
     "predeploy": "npm audit",
     "deploy": "git push heroku main"
   },
-  "keywords": [],
+  "keywords": [
+    "heroku"
+  ],
   "author": "Nathan Hotchkiss",
   "license": "UNLICENSED",
   "dependencies": {
