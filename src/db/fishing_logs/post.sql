@@ -5,9 +5,5 @@ SELECT * FROM go_insert_new_fishing_log(
   ${pounds},
   ${ounces},
   ${bait},
-  ${fishing_method},
-  ${filename},
-  ${filepath},
-  ${mimetype},
-  ${size}
+  ${fishing_method}
 );

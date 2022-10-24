@@ -1,5 +1,8 @@
-  ALTER TABLE fishing_logs 
-    ADD COLUMN filename VARCHAR(255),
-    ADD COLUMN filepath VARCHAR(255),
-    ADD COLUMN mimetype VARCHAR(255),
-    ADD COLUMN size VARCHAR(255);
+CREATE TABLE fish_images (
+    id SERIAL NOT NULL PRIMARY KEY,
+    log_id BIGINT REFERENCES fishing_logs(fish_id),
+    filename TEXT UNIQUE NOT NULL,
+    filepath TEXT NOT NULL,
+    mimetype TEXT NOT NULL,
+    size BIGINT NOT NULL
+);
