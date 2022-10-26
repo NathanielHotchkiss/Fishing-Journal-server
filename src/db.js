@@ -4,11 +4,7 @@ const { Client, Pool } = require("pg");
 
 require("dotenv").config();
 
-const {
-  DATABASE_URL,
-  DEV_DATABASE_URL,
-  NODE_ENV,
-} = process.env;
+const { DATABASE_URL, DEV_DATABASE_URL, NODE_ENV } = process.env;
 
 NODE_ENV === "production" ? DATABASE_URL : DEV_DATABASE_URL;
 
@@ -16,7 +12,7 @@ const IS_DEV = NODE_ENV === "development";
 const PREFIX = "go_"; // all types, functions, triggers should be prefixed this way
 
 const db_config = {
-  connectionString: DATABASE_URL,
+  connectionString: IS_DEV ? DEV_DATABASE_URL : DATABASE_URL,
   ssl: IS_DEV ? undefined : { rejectUnauthorized: false },
 };
 
