@@ -4,11 +4,7 @@ SET species = ${species},
     pounds = ${pounds},
     ounces = ${ounces},
     bait = ${bait},
-    fishing_method = ${fishing_method},
-    filename = ${filename},
-    filepath = ${filepath},
-    mimetype = ${mimetype},
-    size = ${size}
+    fishing_method = ${fishing_method}
 WHERE fish_id = ${fish_id}
 RETURNING *;
 
