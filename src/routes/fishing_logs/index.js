@@ -41,6 +41,7 @@ router
         rows: [fishing_logs],
       } = await db.file("db/fishing_logs/post.sql", newLog);
 
+      console.log(fishing_logs)
       res.status(201).json(fishing_logs);
     } catch (error) {
       next(error);

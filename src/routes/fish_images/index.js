@@ -1,32 +1,38 @@
 const express = require("express");
 const db = require("../../db");
-const { requireAuth } = require("../../middleware/auth");
 const multer = require("multer");
-const path = require("path");
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
+
+const { requireAuth } = require("../../middleware/auth");
+const { uploadFile, getFileStream } = require("../../actions/s3");
 
 const router = express.Router();
 
-// Create multer object
-const imageUpload = multer({
-  dest: "images",
-});
+const upload = multer({ dest: "uploads/" });
 
 router
-  .route("/image")
+  .route("/")
 
-  .post(imageUpload.single("image"), async (req, res, next) => {
-    const { log_id } = req.body;
-    const { filename, mimetype, size } = req.file;
+  .post(upload.single("image"), async (req, res, next) => {
+    const { fish_id } = req.body;
+    const { file: { filename, mimetype, size } = {} } = req;
+
     const filepath = req.file.path;
 
     try {
       const newImage = {
-        log_id,
+        fish_id,
         filename,
         filepath,
         mimetype,
         size,
       };
+
+      await uploadFile(req.file);
+
+      await unlinkFile(filepath);
 
       const {
         rows: [fish_images],
@@ -39,34 +45,14 @@ router
   });
 
 router
-  .route("/image/:filename")
+  .route("/:key")
 
-  // Image Get Routes
-  .get(async (req, res) => {
-    const { filename } = req.params;
-    await db
-      .file("db/fish_images/get.sql", { filename })
-      .then((images) => {
-        if (images[0]) {
-          const dirname = path.resolve();
-          const fullfilepath = path.join(dirname, images[0].filepath);
-          return res.type(images[0].mimetype).sendFile(fullfilepath);
-        }
-        return Promise.reject(new Error("Image does not exist"));
-      })
-      .catch((err) =>
-        res
-          .status(404)
-          .json({ success: false, message: "not found", stack: err.stack })
-      );
+  .get((req, res) => {
+    console.log(req.params);
+    const key = req.params.key;
+    const readStream = getFileStream(key);
+
+    readStream.pipe(res);
   });
-
-//   .get(async (req, res) => {
-//     const { fish_id } = req.params;
-//     const {
-//       rows: [fishing_logs],
-//     } = await db.file("db/fishing_logs/get_fish.sql", { fish_id });
-//     res.json(fishing_logs);
-//   })
 
 module.exports = router;

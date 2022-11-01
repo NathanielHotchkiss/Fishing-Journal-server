@@ -17,6 +17,8 @@ router
   .post(jsonBodyParser, async (req, res, next) => {
     const { password, email, first_name, last_name } = req.body;
 
+    email = toLowercase(email);
+
     for (const field of ["first_name", "last_name", "email", "password"])
       if (!req.body[field])
         return res.status(400).json({
@@ -72,6 +74,8 @@ router
     const { user_id } = req.params;
 
     const { first_name, last_name, email } = req.body;
+
+    email = toLowercase(email);
 
     for (const field of ["first_name", "last_name", "email"])
       if (!req.body[field])
