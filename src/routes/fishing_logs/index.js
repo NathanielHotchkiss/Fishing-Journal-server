@@ -7,7 +7,7 @@ const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 
-const { uploadFile, getFileStream } = require("../../actions/s3/index.js");
+const { uploadFile, getFileStream } = require("../../actions/S3");
 
 const jsonBodyParser = express.json();
 
