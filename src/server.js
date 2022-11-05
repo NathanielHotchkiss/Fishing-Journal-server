@@ -1,6 +1,8 @@
 const app = require("./app");
 const db = require("./db");
-const { NODE_ENV, PORT } = process.env;
+const { NODE_ENV } = process.env;
+
+const { PORT } = require("./config");
 
 process.on("SIGTERM", async () => {
   console.log("warn", "Process terminate signal received.");
