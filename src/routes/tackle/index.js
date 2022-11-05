@@ -12,9 +12,8 @@ router
 
   .post(jsonBodyParser, async (req, res, next) => {
     const { user_id, title, brand, color, description } = req.body;
-    console.log(req.body);
 
-    for (const field of ["title", "color"])
+    for (const field of ["title"])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
@@ -55,7 +54,7 @@ router
 
     const { title, description, brand, color } = req.body;
 
-    for (const field of ["title", "brand", "color"])
+    for (const field of ["title"])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
@@ -112,7 +111,6 @@ async function checkTackleExists(req, res, next) {
         error: "Tackle does not exist",
       });
     }
-    res.locals.tackle = tackle;
 
     next();
   } catch (error) {

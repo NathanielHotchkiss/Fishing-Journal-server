@@ -17,6 +17,10 @@
     ounces VARCHAR(255) NOT NULL,
     bait VARCHAR(255) NOT NULL,
     fishing_method VARCHAR(255) NOT NULL,
+    filename VARCHAR(255) NOT NULL,
+    filepath VARCHAR(255) NOT NULL,
+    mimetype VARCHAR(255) NOT NULL,
+    size BIGINT NOT NULL,
     created TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     archived TIMESTAMPTZ DEFAULT NULL
 );

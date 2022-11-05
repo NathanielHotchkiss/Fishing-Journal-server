@@ -28,7 +28,6 @@ const getUserWithEmail = async (email) => {
   const {
     rows: [user],
   } = await db.file("db/app_users/get_by_email.sql", { email });
-  console.log("USER", user);
   return user;
 };
 

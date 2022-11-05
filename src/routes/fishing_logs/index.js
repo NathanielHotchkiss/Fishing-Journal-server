@@ -2,24 +2,39 @@ const express = require("express");
 const db = require("../../db");
 const { requireAuth } = require("../../middleware/auth");
 
+const multer = require("multer");
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
+
+const { uploadFile, getFileStream } = require("../../actions/s3");
+
 const jsonBodyParser = express.json();
 
 const router = express.Router();
+
+const upload = multer({ dest: "uploads/" });
 
 router
   .route("/")
   .all(requireAuth)
 
-  .post(jsonBodyParser, async (req, res, next) => {
+  .post(upload.single("image"), async (req, res, next) => {
     const {
-      user_id,
-      species,
-      fish_length,
-      pounds,
-      ounces,
-      bait,
-      fishing_method,
-    } = req.body;
+      body: {
+        user_id,
+        species,
+        fish_length,
+        pounds,
+        ounces,
+        bait,
+        fishing_method,
+      },
+    } = req;
+
+    const { file: { filename, mimetype, size } = {} } = req;
+
+    const filepath = req.file.path;
 
     for (const field of ["species", "fish_length", "pounds", "ounces"])
       if (!req.body[field])
@@ -35,13 +50,20 @@ router
         ounces,
         bait,
         fishing_method,
+        filename,
+        filepath,
+        mimetype,
+        size,
       };
+
+      await uploadFile(req.file);
+
+      await unlinkFile(filepath);
 
       const {
         rows: [fishing_logs],
       } = await db.file("db/fishing_logs/post.sql", newLog);
 
-      console.log(fishing_logs)
       res.status(201).json(fishing_logs);
     } catch (error) {
       next(error);
@@ -54,9 +76,16 @@ router
 
   .get(async (req, res) => {
     const { fish_id } = req.params;
+
     const {
       rows: [fishing_logs],
-    } = await db.file("db/fishing_logs/get_fish.sql", { fish_id });
+    } = await db.file("db/fishing_logs/get.sql", { fish_id });
+
+    const key = fishing_logs.filename;
+    const readStream = getFileStream(key);
+
+    readStream.pipe(res);
+
     res.json(fishing_logs);
   })
 
@@ -80,6 +109,10 @@ router
         ounces,
         bait,
         fishing_method,
+        filename,
+        filepath,
+        mimetype,
+        size,
       };
 
       const {
@@ -120,15 +153,14 @@ router
 async function checkLogExists(req, res, next) {
   const { fish_id } = req.params;
   try {
-    const fishingLog = await db.file("db/fishing_logs/get_fish.sql", {
+    const fishingLog = await db.file("db/fishing_logs/get.sql", {
       fish_id,
     });
     if (!fishingLog) {
       return res.status(404).json({
-        error: "Log does not exist",
+        error: "Log does not exist.",
       });
     }
-    res.locals.fishingLog = fishingLog;
 
     next();
   } catch (error) {

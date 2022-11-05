@@ -5,7 +5,7 @@ const { NODE_ENV, PORT } = process.env;
 process.on("SIGTERM", async () => {
   console.log("warn", "Process terminate signal received.");
   try {
-    express.close(); // this may not be right
+    express.close();
     console.log("SERVER HAS STOPPED ACCEPTING CONNECTIONS");
   } catch (e) {
     console.log("THERE WAS AN ERROR SHUTTING DOWN", e);
@@ -17,7 +17,7 @@ process.on("SIGTERM", async () => {
 const migrate = async () => {
   console.log("warn", "Running migration script");
   try {
-    await db.upgrade("./src/db", "db_migrate", ["db_functions", "db_triggers"]);
+    await db.upgrade("./src/db", "db_migrate", ["db_functions"]);
   } catch (e) {
     console.log("error in migrate", e);
     await db.end();

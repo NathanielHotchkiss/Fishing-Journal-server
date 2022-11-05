@@ -12,7 +12,7 @@ router
   .post(jsonBodyParser, requireAuth, async (req, res, next) => {
     const { user_id, title, description, type } = req.body;
 
-    for (const field of ["title", "description", "type"])
+    for (const field of ["title", "type"])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
@@ -52,7 +52,7 @@ router
 
     const { title, description, type } = req.body;
 
-    for (const field of ["title", "description", "type"])
+    for (const field of ["title", "type"])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
@@ -108,7 +108,6 @@ async function checkSpeciesExists(req, res, next) {
         error: "Species does not exist",
       });
     }
-    res.locals.species = species;
 
     next();
   } catch (error) {

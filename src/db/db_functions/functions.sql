@@ -29,7 +29,11 @@ CREATE OR REPLACE FUNCTION go_insert_new_fishing_log(
   _pounds TEXT,
   _ounces TEXT,
   _bait TEXT,
-  _fishing_method TEXT
+  _fishing_method TEXT,
+  _filename TEXT,
+  _filepath TEXT,
+  _mimetype TEXT,
+  _size BIGINT
 ) RETURNS SETOF fishing_logs AS $$
 DECLARE
   _fish_id BIGINT;
@@ -41,7 +45,11 @@ BEGIN
     pounds,
     ounces,
     bait,
-    fishing_method
+    fishing_method,
+    filename,
+    filepath,
+    mimetype,
+    size
   ) VALUES (
     _user_id,
     _species,
@@ -49,7 +57,11 @@ BEGIN
     _pounds,
     _ounces,
     _bait,
-    _fishing_method
+    _fishing_method,
+    _filename,
+    _filepath,
+    _mimetype,
+    _size
   ) RETURNING fish_id INTO _fish_id;
   RETURN QUERY SELECT * FROM fishing_logs WHERE fish_id = _fish_id;
 END;
@@ -103,32 +115,5 @@ BEGIN
     _type
   ) RETURNING species_id INTO _species_id;
   RETURN QUERY SELECT * FROM species WHERE species_id = _species_id;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION go_insert_new_fish_images(
-  _log_id BIGINT,
-  _filename TEXT,
-  _filepath TEXT,
-  _mimetype TEXT,
-  _size BIGINT
-) RETURNS SETOF fish_images AS $$
-DECLARE
-  _img_id BIGINT;
-BEGIN 
-  INSERT INTO fish_images (
-    log_id,
-    filename,
-    filepath,
-    mimetype,
-    size
-  ) VALUES (
-    _log_id,
-    _filename,
-    _filepath,
-    _mimetype,
-    _size
-  ) RETURNING id INTO _img_id;
-  RETURN QUERY SELECT * FROM fish_images WHERE id = _img_id;
 END;
 $$ LANGUAGE plpgsql;

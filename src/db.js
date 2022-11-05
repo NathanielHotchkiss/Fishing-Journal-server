@@ -6,8 +6,6 @@ require("dotenv").config();
 
 const { DATABASE_URL, DEV_DATABASE_URL, NODE_ENV } = process.env;
 
-// NODE_ENV === "production" ? DATABASE_URL : DEV_DATABASE_URL;
-
 const IS_DEV = NODE_ENV === "development";
 const PREFIX = "go_"; // all types, functions, triggers should be prefixed this way
 

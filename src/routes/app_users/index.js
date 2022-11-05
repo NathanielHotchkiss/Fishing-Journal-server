@@ -17,7 +17,7 @@ router
   .post(jsonBodyParser, async (req, res, next) => {
     const { password, email, first_name, last_name } = req.body;
 
-    email = toLowercase(email);
+    const emailLowerCase = email.toLowerCase();
 
     for (const field of ["first_name", "last_name", "email", "password"])
       if (!req.body[field])
@@ -32,16 +32,16 @@ router
         return res.status(400).json({ error: passwordError });
       }
 
-      const hasUserWithemail = await hasUserWithEmail(email);
+      const hasUserWithemail = await hasUserWithEmail(emailLowerCase);
 
       if (hasUserWithemail) {
-        return res.status(400).json({ error: `email already taken` });
+        return res.status(400).json({ error: `Email is already being used.` });
       }
 
       const hashedPassword = await hashPassword(password);
 
       const newUser = {
-        email,
+        email: emailLowerCase,
         password: hashedPassword,
         first_name,
         last_name,
@@ -73,21 +73,19 @@ router
   .put(jsonBodyParser, async (req, res, next) => {
     const { user_id } = req.params;
 
-    const { first_name, last_name, email } = req.body;
+    const { first_name, last_name } = req.body;
 
-    email = toLowercase(email);
-
-    for (const field of ["first_name", "last_name", "email"])
+    for (const field of ["first_name", "last_name"])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
         });
+
     try {
       const newUser = {
         user_id,
         first_name,
         last_name,
-        email,
       };
 
       const {
