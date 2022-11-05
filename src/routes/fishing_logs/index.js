@@ -32,15 +32,17 @@ router
       },
     } = req;
 
-    const { file: { filename, mimetype, size } = {} } = req;
-
-    const filepath = req.file.path;
+    let filename = null,
+      filepath = null,
+      mimetype = null,
+      size = null;
 
     for (const field of ["species", "fish_length", "pounds", "ounces"])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
         });
+
     try {
       const newLog = {
         user_id,
@@ -56,9 +58,14 @@ router
         size,
       };
 
-      await uploadFile(req.file);
+      if (req.file) {
+        let { file: { filename, mimetype, size } = {} } = req;
+        let filepath = req.file.path;
 
-      await unlinkFile(filepath);
+        await uploadFile(req.file);
+
+        await unlinkFile(filepath);
+      }
 
       const {
         rows: [fishing_logs],
