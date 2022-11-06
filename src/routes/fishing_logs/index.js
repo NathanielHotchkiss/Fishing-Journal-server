@@ -1,15 +1,12 @@
 const express = require("express");
-const db = require("../../db");
-const { requireAuth } = require("../../middleware/auth");
-
 const multer = require("multer");
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 
-const { uploadFile, getFileStream } = require("../../actions/S3");
-
-const jsonBodyParser = express.json();
+const db = require("../../db");
+const { requireAuth } = require("../../middleware/auth");
+const { uploadFile } = require("../../actions/S3");
 
 const router = express.Router();
 
@@ -32,10 +29,8 @@ router
       },
     } = req;
 
-    let filename = null,
-      filepath = null,
-      mimetype = null,
-      size = null;
+    let { file: { filename, mimetype, size } = {} } = req || null;
+    let filepath = null;
 
     for (const field of ["species", "fish_length", "pounds", "ounces"])
       if (!req.body[field])
@@ -59,11 +54,9 @@ router
       };
 
       if (req.file) {
-        let { file: { filename, mimetype, size } = {} } = req;
-        let filepath = req.file.path;
+        filepath = req.file.path;
 
         await uploadFile(req.file);
-
         await unlinkFile(filepath);
       }
 
@@ -88,25 +81,36 @@ router
       rows: [fishing_logs],
     } = await db.file("db/fishing_logs/get.sql", { fish_id });
 
-    const key = fishing_logs.filename;
-    const readStream = getFileStream(key);
-
-    readStream.pipe(res);
-
     res.json(fishing_logs);
   })
 
-  .put(jsonBodyParser, async (req, res, next) => {
+  .put(upload.single("image"), async (req, res, next) => {
     const { fish_id } = req.params;
 
     const { species, fish_length, pounds, ounces, bait, fishing_method } =
       req.body;
+
+    let filename = null;
+    let filepath = null;
+    let mimetype = null;
+    let size = null;
+
+    if (req.file) {
+      filename = req.file.filename;
+      filepath = req.file.path;
+      mimetype = req.file.mimetype;
+      size = req.file.size;
+
+      await uploadFile(req.file);
+      await unlinkFile(filepath);
+    }
 
     for (const field of ["species", "fish_length", "pounds", "ounces"])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
         });
+
     try {
       const newFishingLog = {
         fish_id,
