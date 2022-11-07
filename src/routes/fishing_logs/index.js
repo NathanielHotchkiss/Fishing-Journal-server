@@ -26,6 +26,10 @@ router
         ounces,
         bait,
         fishing_method,
+        clarity,
+        description,
+        date,
+        time,
       },
     } = req;
 
@@ -47,6 +51,10 @@ router
         ounces,
         bait,
         fishing_method,
+        clarity,
+        description,
+        date,
+        time,
         filename,
         filepath,
         mimetype,
@@ -87,8 +95,18 @@ router
   .put(upload.single("image"), async (req, res, next) => {
     const { fish_id } = req.params;
 
-    const { species, fish_length, pounds, ounces, bait, fishing_method } =
-      req.body;
+    const {
+      species,
+      fish_length,
+      pounds,
+      ounces,
+      bait,
+      fishing_method,
+      clarity,
+      description,
+      date,
+      time,
+    } = req.body;
 
     let filename = null;
     let filepath = null;
@@ -120,6 +138,10 @@ router
         ounces,
         bait,
         fishing_method,
+        clarity,
+        description,
+        date,
+        time,
         filename,
         filepath,
         mimetype,

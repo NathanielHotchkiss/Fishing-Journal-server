@@ -10,13 +10,17 @@
 
   CREATE TABLE fishing_logs (
     fish_id BIGSERIAL PRIMARY KEY,
-    species VARCHAR(255) NOT NULL,
     user_id BIGINT references app_users(user_id) NOT NULL,
+    species VARCHAR(255) NOT NULL,
     fish_length VARCHAR(255) NOT NULL,
     pounds VARCHAR(255) NOT NULL,
     ounces VARCHAR(255) NOT NULL,
     bait VARCHAR(255) NOT NULL,
     fishing_method VARCHAR(255) NOT NULL,
+    clarity VARCHAR(255) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    date DATE NOT NULL,
+    time TIME NOT NULL,
     filename VARCHAR(255) NOT NULL,
     filepath VARCHAR(255) NOT NULL,
     mimetype VARCHAR(255) NOT NULL,
